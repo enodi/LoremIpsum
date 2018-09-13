@@ -30,24 +30,28 @@ function generateText(request, response) {
 
     const urlPath = url.parse(request.url, true);
     const urlParts = urlPath.href.split("&");
-    const value = urlParts[1].split("=");
-    let loremIpsum = new Generator(`&${value[0]}=${value[1]}&start-with-lorem=1`);
-    loremIpsum.on("end", dummyText => {
-      if (value[0] === "sentences") {
-        const sentences = dummyText.toString().split(".");
-        renderer.template("text", sentences, response);
-      } else {
-        renderer.template("text", dummyText, response);
-      }
-      renderer.template("footer", [], response);
-      response.end();
-    });
-
-    loremIpsum.on("error", error => {
-      renderer.template("error", [], response);
-      renderer.template("footer", [], response);
-      response.end();
-    });
+    let value = '';
+    if (urlParts[1]) {
+      value = urlParts[1].split("=");
+      let loremIpsum = new Generator(`&${value[0]}=${value[1]}&start-with-lorem=1`);
+      loremIpsum.on("end", dummyText => {
+        if (value[0] === "sentences") {
+          const sentences = dummyText.toString().split(".");
+          renderer.template("text", sentences, response);
+          renderer.template("footer", [], response);
+          response.end();
+        } else {
+          renderer.template("text", dummyText, response);
+          renderer.template("footer", [], response);
+          response.end();
+        }
+      });
+      loremIpsum.on("error", error => {
+        renderer.template("error", [], response);
+        renderer.template("footer", [], response);
+        response.end();
+      });
+    }
   }
 }
 

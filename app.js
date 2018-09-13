@@ -10,6 +10,6 @@ const server = http.createServer((request, response) => {
   }).then(() => router.generateText(request, response));
 });
 
-server.listen(port, () => {
+server.listen(process.env.PORT || port, () => {
   console.log(`Server running at localhost:${port}/`);
 });

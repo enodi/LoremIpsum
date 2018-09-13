@@ -1,9 +1,13 @@
 import fs from "fs";
+import cheerio from "cheerio";
 
 function mergeValues(text, content) {
-  for (let [index, value] of text.entries()) {
-    content = content.replace("{{" + index + "}}", value)
+  if (text.length === 0) return content;
+  const $ = cheerio.load(content);
+  for (let value of text) {
+    $("#output").append("<p>" + value + "</p>");
   }
+  content = $.html();
   return content;
 }
 
